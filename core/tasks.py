@@ -27,7 +27,7 @@ def output_file_proccessor(id,file_name,player_id):
         output = OutputFiles.objects.filter(input_details__id=id)
         serializer = OutputFilesSerializer(output,many=True)
         if player_id != '':
-            # send_push(player_id,serializer.data,True)
+            send_push(player_id,'/media/'+resp.split('/media/')[1],True)
             print("done")
     else:
         handwriter.error_status=True
