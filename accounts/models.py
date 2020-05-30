@@ -60,8 +60,7 @@ class User(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
-
-
+#This is used for storing notification device ids
 class OneSignalNotifications(models.Model):
     id = models.UUIDField(default=uuid.uuid4,primary_key=True)
     user = models.OneToOneField(User,on_delete=models.CASCADE)
