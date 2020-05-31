@@ -23,7 +23,7 @@
 * Pre-requisites:
 	-  Python 3.4+
 
-* < directions to install > 
+* Directions to install
 ```bash
 git clone https://github.com/gdgvit/handly-backend/
 cd handly-backend/
@@ -45,7 +45,7 @@ python manage.py runserver
 
 ## Contributors
 
-* Sai Sandeep (https://github.com/raysandeep)
+* [Sai Sandeep](https://github.com/raysandeep)
 
 
 
