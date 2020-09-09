@@ -10,7 +10,7 @@ from django.conf import settings
 from Algo.document_parser import main
 from .models import OutputFiles, HandwritingInputLogger
 from .serializers import OutputFilesSerializer
-s3 = boto3.client('s3')
+s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY , aws_secret_access_key=settings.AWS_SECRET)
 
 
 # start after 1 sec

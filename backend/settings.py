@@ -125,4 +125,8 @@ ONE_SIGNAL_AUTH_KEY = config('ONE_SIGNAL_AUTH_KEY')
 
 PICKLE_LOC = os.path.join(BASE_DIR, 'hashes.pickle')
 
+
+AWS_ACCESS_KEY = config('AWS_ACCESS_KEY')
+AWS_SECRET = config('AWS_SECRET')
+
 django_heroku.settings(locals())
