@@ -10,7 +10,8 @@ from django.conf import settings
 from Algo.document_parser import main
 from .models import OutputFiles, HandwritingInputLogger
 from .serializers import OutputFilesSerializer
-s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY , aws_secret_access_key=settings.AWS_SECRET)
+
+s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY, aws_secret_access_key=settings.AWS_SECRET)
 
 
 # start after 1 sec
@@ -19,8 +20,8 @@ def output_file_proccessor(id, file_name, player_id):
     output_file_name = os.path.join(settings.MEDIA_ROOT, id + ".pdf")
     pic_loc = settings.PICKLE_LOC
     url = 'https://dsc-handly.s3.ap-south-1.amazonaws.com/TEST.docx'
-    input_loc = os.path.join(settings.MEDIA_ROOT, id+'.docx')
-    s3.download_file('dsc-handly', id+'.docx' , input_loc)
+    input_loc = os.path.join(settings.MEDIA_ROOT, id + '.docx')
+    s3.download_file('dsc-handly', 'TEST.docx', input_loc)
     print(input_loc, pic_loc, output_file_name)
     status, resp = main(input_loc, output_file_name, pic_loc)
     print(resp)
