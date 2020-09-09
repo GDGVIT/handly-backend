@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'accounts',
     'core',
-    
+
     'background_task',
 ]
 
@@ -69,9 +69,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -84,9 +81,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
-
-# Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -110,7 +104,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE =  'Asia/Kolkata'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -118,12 +112,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
 STATIC_URL = '/static/'
-
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
@@ -131,11 +120,9 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-
 ONE_SIGNAL_ID = config('ONE_SIGNAL_ID')
 ONE_SIGNAL_AUTH_KEY = config('ONE_SIGNAL_AUTH_KEY')
 
-
-PICKLE_LOC = os.path.join(BASE_DIR,'hashes.pickle')
+PICKLE_LOC = os.path.join(BASE_DIR, 'hashes.pickle')
 
 django_heroku.settings(locals())

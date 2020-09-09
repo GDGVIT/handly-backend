@@ -5,11 +5,11 @@ import joblib
 
 from .page_parser import PageParser
 
+
 class DocumentParser(PageParser):
-    def __init__(self, hashes, CHARS_PER_LINE, LINES_PER_PAGE): 
+    def __init__(self, hashes, CHARS_PER_LINE, LINES_PER_PAGE):
         PageParser.__init__(self, hashes, CHARS_PER_LINE)
         self.LINES_PER_PAGE = LINES_PER_PAGE
-    
 
     def parse_document(self, document, destination_path):
         pageImages = self.parse_pages_constrained(document, self.LINES_PER_PAGE, False)
@@ -22,9 +22,10 @@ class DocumentParser(PageParser):
                 Image.fromarray(pageImages[index].astype('uint8'), 'RGB')
             )
         firstPage = Image.fromarray(pageImages[0].astype('uint8'), 'RGB')
-        firstPage.save(destination_path, "PDF", save_all = True, append_images = allImages, resolution = 100.0)
+        firstPage.save(destination_path, "PDF", save_all=True, append_images=allImages, resolution=100.0)
 
-def main(input_loc,output,pickle_loc):
+
+def main(input_loc, output, pickle_loc):
     # output = '/Users/unknown-guy-1610/Desktop/Projects/Handly/twertest.pdf'
     # input_loc = '/Users/unknown-guy-1610/Desktop/Projects/Handly/test.docx'
     # pickle_loc = '/Users/unknown-guy-1610/Desktop/Projects/Handly-App/Algo/hashes.pickle'
@@ -35,12 +36,13 @@ def main(input_loc,output,pickle_loc):
     with open(HASHES_PATH, 'rb') as f:
         hashes = joblib.load(f)
     document_parser = DocumentParser(hashes, CHARS_PER_LINE, LINES_PER_PAGE)
-    try: 
-        document_parser.parse_document(document,output)
-        return True,output
+    try:
+        document_parser.parse_document(document, output)
+        return True, output
     except KeyError as e:
-        print("error :",str(e)[1])
-        return False,str(e)[1]
+        print("error :", str(e)[1])
+        return False, str(e)[1]
+
 
 if __name__ == '__main__':
     # parser = argparse.ArgumentParser(description='Output pages for docx document')
@@ -48,4 +50,4 @@ if __name__ == '__main__':
     # parser.add_argument('out_path', type = str, nargs = 1)
     # args = parser.parse_args()
 
-    main('','','')
+    main('', '', '')
