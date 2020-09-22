@@ -13,8 +13,8 @@ from .serializers import (
     HandwritingInputSerializer,
 )
 from accounts.models import OneSignalNotifications
-from .tasks import output_file_proccessor
-
+from .tasks import output_file_proccessor, generateUrl
+import boto3
 
 class CollectionsView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -78,7 +78,15 @@ class FileUploadView(APIView):
                 player_id = request.user.onesignalnotifications.player_id
             except:
                 player_id = ''
-            output_file_proccessor(serializer1.data['id'], serializer1.data['input_file'], player_id)
+            output_file_proccessor(serializer1.data['id'], serializer1.data['input_file_url'], player_id)
             return Response(serializer1.data, status=201)
         else:
             return Response(serializer1.errors, status=400)
+
+
+class FileUploadPresignView(APIView):
+    def post(self,request):
+        key = request.data.get('key',None)
+        if key is not None:
+            return Response(generateUrl(key),status=200)
+        return Response(status=400)
