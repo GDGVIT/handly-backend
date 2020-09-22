@@ -66,6 +66,7 @@ class CollectionsView(APIView):
 
 class FileUploadView(APIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser]
 
     def get(self, request):
         pass  # status
