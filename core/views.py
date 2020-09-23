@@ -6,11 +6,11 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from .models import (
     Collections,
-    HandwritingInputLogger,
+    HandwritingInputLogger, InputFile,
 )
 from .serializers import (
     CollectionSerializer,
-    HandwritingInputSerializer,
+    HandwritingInputSerializer, InputFileSerializer,
 )
 from accounts.models import OneSignalNotifications
 from .tasks import output_file_proccessor, generateUrl
@@ -66,23 +66,29 @@ class CollectionsView(APIView):
 
 class FileUploadView(APIView):
     permission_classes = [IsAuthenticated]
-    parser_classes = [JSONParser]
 
     def get(self, request):
         pass  # status
 
     def post(self, request):
-        serializer1 = HandwritingInputSerializer(data=request.data)
-        if serializer1.is_valid():
-            serializer1.save()
+        serializer = InputFileSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            serializer1 = HandwritingInputSerializer(data=request.data)
+            if serializer1.is_valid():
+                serializer1.save(input_file=InputFile.objects.filter(id=serializer.data['id'])[0])
+            else:
+                return Response({"errors":serializer1.errors}, status=400)
             try:
                 player_id = request.user.onesignalnotifications.player_id
             except:
                 player_id = ''
-            output_file_proccessor(serializer1.data['id'], serializer1.data['input_file_url'], player_id)
+            print(serializer1.data['id'], player_id)
+            output_file_proccessor(serializer1.data['id'], serializer.data['file'], player_id)
             return Response(serializer1.data, status=201)
         else:
-            return Response(serializer1.errors, status=400)
+            return Response({"errors":serializer.errors}, status=400)
 
 
 class FileUploadPresignView(APIView):

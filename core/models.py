@@ -10,11 +10,15 @@ class Collections(models.Model):
     name = models.CharField(max_length=50)
 
 
+class InputFile(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    file = models.FileField()
+
 class HandwritingInputLogger(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     collection = models.ForeignKey(Collections, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    input_file_url = models.URLField()
+    input_file = models.ForeignKey(InputFile,on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
     error_status = models.BooleanField(default=False)
     error_logger = models.CharField(max_length=100, default='No error')

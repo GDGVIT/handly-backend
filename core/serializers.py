@@ -2,7 +2,8 @@ from rest_framework import serializers
 from .models import (
     Collections,
     HandwritingInputLogger,
-    OutputFiles
+    OutputFiles,
+    InputFile
 )
 
 
@@ -15,6 +16,13 @@ class CollectionSerializer(serializers.ModelSerializer):
 class HandwritingInputSerializer(serializers.ModelSerializer):
     class Meta:
         model = HandwritingInputLogger
+        exclude = ['input_file']
+
+
+
+class InputFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InputFile
         fields = '__all__'
 
 
