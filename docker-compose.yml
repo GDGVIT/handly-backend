@@ -18,6 +18,8 @@ services:
     networks:
       - internal
       - web
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DATABASE}"
 
   db:
     container_name: db
