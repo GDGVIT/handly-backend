@@ -14,10 +14,29 @@ services:
       - .:/usr/app
     env_file: .env
     depends_on:
-      - redis
+      - db
     networks:
       - internal
       - web
+
+  db:
+    container_name: db
+    image: postgres:10.4
+    ports:
+      - 5432:5432
+    env_file: .env
+    networks:
+      - internal
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DATABASE: "${POSTGRES_DATABASE}"
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
 
   backgroundtask:
     build: .
@@ -25,6 +44,9 @@ services:
     env_file: .env
     networks:
       - internal
+    depends_on: 
+      - db
+      - backend
 
 
 networks:
