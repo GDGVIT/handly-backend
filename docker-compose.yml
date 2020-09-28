@@ -21,6 +21,15 @@ services:
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DATABASE}"
 
+  background_tasks:
+    build: .
+    command: python manage.py process_tasks
+    env_file: .env
+    depends_on:
+      - db
+    networks:
+      - internal
+
   db:
     container_name: db
     image: postgres:10.4
