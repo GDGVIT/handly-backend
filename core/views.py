@@ -18,7 +18,7 @@ from .tasks import output_file_proccessor
 import boto3
 from botocore.client import Config
 
-s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY, aws_secret_access_key=settings.AWS_SECRET, config=Config(signature_version='s3v4'))
+s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY, aws_secret_access_key=settings.AWS_SECRET, config=Config(signature_version='s3v4'), region_name='ap-south-1')
 
 
 def generateUrl(key):
