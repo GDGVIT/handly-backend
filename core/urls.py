@@ -6,5 +6,6 @@ from . import views
 urlpatterns = [
     path('collections/',views.CollectionsView.as_view()),
     path('handwriter/',views.FileUploadView.as_view()),
-    path('upload/',views.FileUploadPresignView.as_view())
+    path('signed/',views.FileUploadPresignView.as_view()),
+    path('view/',views.ViewFiles.as_view())
 ]

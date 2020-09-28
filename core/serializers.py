@@ -1,3 +1,4 @@
+from django.db.models import fields
 from rest_framework import serializers
 from .models import (
     Collections,
@@ -30,3 +31,9 @@ class OutputFilesSerializer(serializers.ModelSerializer):
     class Meta:
         model = OutputFiles
         exclude = ['input_details']
+
+
+class OutputSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OutputFiles
+        fields = '__all__'

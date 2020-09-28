@@ -99,4 +99,4 @@ def send_push(player_id, output, status):
 
 
 def generateUrl(key):
-    return s3.generate_presigned_post('dsc-handly', key, ExpiresIn=3600)
+    return {"url":s3.generate_presigned_post('dsc-handly', key, ExpiresIn=3600)}

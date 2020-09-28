@@ -6,11 +6,11 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from .models import (
     Collections,
-    HandwritingInputLogger, InputFile,
+    HandwritingInputLogger, InputFile, OutputFiles,
 )
 from .serializers import (
     CollectionSerializer,
-    HandwritingInputSerializer, InputFileSerializer,
+    HandwritingInputSerializer, InputFileSerializer, OutputSerializer,
 )
 from accounts.models import OneSignalNotifications
 from .tasks import output_file_proccessor, generateUrl
@@ -95,5 +95,15 @@ class FileUploadPresignView(APIView):
     def post(self,request):
         key = request.data.get('key',None)
         if key is not None:
-            return Response(generateUrl(key),status=200)
+            return Response(generateUrl(key+".pdf"),status=200)
         return Response(status=400)
+
+
+class ViewFiles(APIView):
+    def post(self,request):
+        id = request.data.get("id",None)
+        if id is None:
+            return Response(status=400)
+        output = OutputFiles.objects.filter(
+            input_details__collection__id=id,input_details__collection__user=request.user)
+        return Response(OutputSerializer(output,many=True).data,status=200)
