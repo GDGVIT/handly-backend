@@ -27,10 +27,13 @@ services:
     env_file: .env
     depends_on:
       - redis
+      - db
     networks:
       - internal
     volumes:
       - .:/usr/app
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DATABASE}"
   
   redis:
     container_name: redis
