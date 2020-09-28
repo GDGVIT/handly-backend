@@ -16,15 +16,19 @@ from .serializers import (
 from accounts.models import OneSignalNotifications
 from .tasks import output_file_proccessor
 import boto3
+from botocore.client import Config
 
-session = boto3.session.Session(
-    aws_access_key_id=settings.AWS_ACCESS_KEY, aws_secret_access_key=settings.AWS_SECRET,
-    region_name='ap-south-1')
-s3client = session.client('s3', config= boto3.session.Config(signature_version='s3v4'))
+s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY, aws_secret_access_key=settings.AWS_SECRET, config=Config(signature_version='s3v4'))
 
 
 def generateUrl(key):
-    return s3client.get_object(Bucket='dsc-handly', Key=key)
+    return s3.generate_presigned_url(
+    ClientMethod='get_object',
+    Params={
+        'Bucket': 'dsc-handly',
+        'Key': key
+    }
+)
 
 class CollectionsView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -105,7 +109,7 @@ class FileUploadPresignView(APIView):
     def post(self,request):
         key = request.data.get('key',None)
         if key is not None:
-            return Response(generateUrl(key+".pdf"),status=200)
+            return Response({"url":generateUrl(key+".pdf")},status=200)
         return Response(status=400)
 
 
