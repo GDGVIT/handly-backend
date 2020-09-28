@@ -107,3 +107,9 @@ class ViewFiles(APIView):
         output = OutputFiles.objects.filter(
             input_details__collection__id=id,input_details__collection__user=request.user)
         return Response(OutputSerializer(output,many=True).data,status=200)
+
+
+class InputLoggerUpdate(generics.RetrieveUpdateDestroyAPIView):
+    model = HandwritingInputLogger
+    serializer_class = HandwritingInputSerializer
+    parser_classes=[JSONParser]
