@@ -4,14 +4,10 @@ import os
 import boto3
 from botocore.exceptions import NoCredentialsError
 import requests
-from background_task import background
-from boto3.session import Session
 from django.conf import settings
-
+from celery.task import task
 from Algo.document_parser import main
 from .models import OutputFiles, HandwritingInputLogger
-from .serializers import OutputFilesSerializer
-from urllib.parse import urlparse
 
 s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY, aws_secret_access_key=settings.AWS_SECRET)
 
@@ -30,7 +26,7 @@ def upload_to_aws(local_file, bucket, s3_file):
 
 
 # start after 1 sec
-@background(schedule=1)
+@task(name="process_flashdeals",serializer='json')
 def output_file_proccessor(id, file_url, player_id):
     output_file_name = os.path.join(settings.MEDIA_ROOT, id + ".pdf")
     pic_loc = settings.PICKLE_LOC

@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'accounts',
     'core',
 
-    'background_task',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +131,9 @@ PICKLE_LOC = os.path.join(BASE_DIR, 'hashes.pickle')
 AWS_ACCESS_KEY = config('AWS_ACCESS_KEY')
 AWS_SECRET = config('AWS_SECRET')
 
+# Celery application definition
+CELERY_BROKER_URL = config('REDIS_URL')
+CELERY_RESULT_BACKEND = config('REDIS_URL')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'

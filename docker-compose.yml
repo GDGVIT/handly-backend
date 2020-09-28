@@ -21,12 +21,21 @@ services:
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DATABASE}"
 
-  background_tasks:
+  celery:
     build: .
-    command: python manage.py process_tasks
+    command: celery -A backend worker -l info
     env_file: .env
     depends_on:
-      - db
+      - redis
+    networks:
+      - internal
+  
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
     networks:
       - internal
 
