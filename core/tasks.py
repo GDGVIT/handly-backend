@@ -81,7 +81,7 @@ def send_push(player_id, output, status):
                    }
         print(payload)
         req = requests.post("https://onesignal.com/api/v1/notifications", headers=header, data=json.dumps(payload))
-        print(req.status_code, req.reason)
+        print(req.status_code, req.json())
     else:
         header = {
             "Content-Type": "application/json; charset=utf-8",
@@ -94,7 +94,7 @@ def send_push(player_id, output, status):
                    }
         print(payload)
         req = requests.post("https://onesignal.com/api/v1/notifications", headers=header, data=json.dumps(payload))
-        print(req.status_code, req.reason)
+        print(req.status_code, req.json())
 
 
 
