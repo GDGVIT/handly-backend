@@ -99,7 +99,7 @@ class FileUploadView(APIView):
             except:
                 player_id = ''
             print(serializer1.data['id'], player_id)
-            output_file_proccessor(serializer1.data['id'], serializer.data['file'], player_id)
+            output_file_proccessor.delay(serializer1.data['id'], serializer.data['file'], player_id)
             return Response(serializer1.data, status=201)
         else:
             return Response({"errors":serializer.errors}, status=400)
