@@ -106,10 +106,15 @@ class ViewFiles(APIView):
             return Response(status=400)
         output = OutputFiles.objects.filter(
             input_details__collection__id=id,input_details__collection__user=request.user)
-        return Response(OutputSerializer(output,many=True).data,status=200)
+        data = OutputSerializer(output,many=True).data
+        for i in data:
+            i['aws_url']=generateUrl(i['url'])
+        return Response(data,status=200)
 
 
 class InputLoggerUpdate(generics.RetrieveUpdateDestroyAPIView):
-    model = HandwritingInputLogger
     serializer_class = HandwritingInputSerializer
     parser_classes=[JSONParser]
+
+    def get_queryset(self):
+        return HandwritingInputLogger.objects.filter(collection__user=self.request.user)
