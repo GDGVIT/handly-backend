@@ -37,3 +37,4 @@ class OutputSerializer(serializers.ModelSerializer):
     class Meta:
         model = OutputFiles
         fields = '__all__'
+        depth = 1
