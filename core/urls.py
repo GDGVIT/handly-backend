@@ -8,5 +8,5 @@ urlpatterns = [
     path('handwriter/',views.FileUploadView.as_view()),
     path('signed/',views.FileUploadPresignView.as_view()),
     path('view/',views.ViewFiles.as_view()),
-    path('update/<pk>/',views.InputLoggerUpdate.as_views())
+    path('update/<pk>/',views.InputLoggerUpdate.as_view())
 ]
