@@ -12,4 +12,4 @@ COPY . .
 
 CMD python manage.py collectstatic
 
-CMD python manage.py runserver 0.0.0.0:80
+CMD python manage.py runserver 0.0.0.0:80 & python manage.py process_tasks &
