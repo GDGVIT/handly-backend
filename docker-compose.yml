@@ -49,16 +49,6 @@ services:
     volumes:
       - ./dbdata:/var/lib/postgresql/data
 
-  backgroundtask:
-    build: .
-    command: python manage.py process_tasks
-    env_file: .env
-    networks:
-      - web
-      - internal
-    depends_on: 
-      - db
-      - backend
 
 volumes:
   postgres_data:
