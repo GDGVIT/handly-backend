@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -16,7 +17,9 @@ from accounts.models import OneSignalNotifications
 from .tasks import output_file_proccessor
 import boto3
 
-session = boto3.session.Session(region_name='ap-south-1')
+session = boto3.session.Session(
+    aws_access_key_id=settings.AWS_ACCESS_KEY, aws_secret_access_key=settings.AWS_SECRET,
+    region_name='ap-south-1')
 s3client = session.client('s3', config= boto3.session.Config(signature_version='s3v4'))
 
 
