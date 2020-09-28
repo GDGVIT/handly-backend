@@ -97,12 +97,3 @@ def send_push(player_id, output, status):
         print(req.status_code, req.json())
 
 
-
-def generateUrl(key):
-    return {"url":s3.generate_presigned_url(
-        ClientMethod='get_object',
-        Params={
-            'Bucket': 'dsc-handly',
-            'Key': key
-        }
-    )}

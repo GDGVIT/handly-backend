@@ -13,8 +13,15 @@ from .serializers import (
     HandwritingInputSerializer, InputFileSerializer, OutputSerializer,
 )
 from accounts.models import OneSignalNotifications
-from .tasks import output_file_proccessor, generateUrl
+from .tasks import output_file_proccessor
 import boto3
+
+session = boto3.session.Session(region_name='ap-south-1')
+s3client = session.client('s3', config= boto3.session.Config(signature_version='s3v4'))
+
+
+def generateUrl(key):
+    return s3client.get_object(Bucket='dsc-handly', Key=key)
 
 class CollectionsView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -108,13 +115,14 @@ class ViewFiles(APIView):
             input_details__collection__id=id,input_details__collection__user=request.user)
         data = OutputSerializer(output,many=True).data
         for i in data:
-            i['aws_url']=generateUrl(i['url'])
+            i['aws_url']=generateUrl(i['url'].split("media/")[1])
         return Response(data,status=200)
 
 
 class InputLoggerUpdate(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = HandwritingInputSerializer
     parser_classes=[JSONParser]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return HandwritingInputLogger.objects.filter(collection__user=self.request.user)
