@@ -34,9 +34,6 @@ def sendNotif(notif, message, title):
             title=title,
             body=message,
         ),
-        android= {
-            "direct_boot_ok": True,
-        },
         token=notif,
     )
     response = messaging.send(message)
