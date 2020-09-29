@@ -48,10 +48,6 @@ def sendNotif(notif, message, title):
 def output_file_proccessor(id, file_url, player_id):
     output_file_name = os.path.join(settings.MEDIA_ROOT, id + ".pdf")
     pic_loc = settings.PICKLE_LOC
-    # fileurlparser = urlparse(file_url, allow_fragments=False)
-    # key = fileurlparser.path
-    # input_loc = os.path.join(settings.MEDIA_ROOT, id + '.docx')
-    # s3.download_file('dsc-handly', key, input_loc)
     input_loc = os.path.join(settings.MEDIA_ROOT,file_url.split('/media/')[1])
     print(input_loc, pic_loc, output_file_name)
     status, resp = main(input_loc, output_file_name, pic_loc)
@@ -80,39 +76,43 @@ def output_file_proccessor(id, file_url, player_id):
         if player_id != '':
             sendNotif(player_id,name+" failed to processed as it contained some invalid characters or images. Please check and retry!","Handwritten Document Failed!")
         # send push
+    try:
+        os.remove(input_loc)
+    except:
+        pass
     print(status)
 
-@task(name="process_notif",serializer='json')
-def send_push(player_id, output, status, name):
-    if status:
-        header = {
-            "Content-Type": "application/json; charset=utf-8",
-            "Authorization": settings.ONE_SIGNAL_AUTH_KEY
-        }
-        payload = {"app_id": settings.ONE_SIGNAL_ID,
-                   "include_player_ids": [player_id],
-                   "headings": {"en": "Handwritten Document Ready!"},
-                   "contents": {"en": name+" is ready!"},
-                   "data": {"status": "Success", "payload": output}
-                   }
-        print(payload)
-        req = requests.post("https://onesignal.com/api/v1/notifications", headers=header, data=json.dumps(payload))
-        print(req.status_code, req.json())
-    else:
-        header = {
-            "Content-Type": "application/json; charset=utf-8",
-            "Authorization": settings.ONE_SIGNAL_AUTH_KEY
-        }
-        payload = {"app_id": settings.ONE_SIGNAL_ID,
-                   "include_player_ids": [player_id],
-                    "headings": {"en": "Handwritten Document Failed!"},
-                    "contents": {"en": name+" failed to processed as it contained some invalid characters or images. Please check and retry!"},
+# @task(name="process_notif",serializer='json')
+# def send_push(player_id, output, status, name):
+#     if status:
+#         header = {
+#             "Content-Type": "application/json; charset=utf-8",
+#             "Authorization": settings.ONE_SIGNAL_AUTH_KEY
+#         }
+#         payload = {"app_id": settings.ONE_SIGNAL_ID,
+#                    "include_player_ids": [player_id],
+#                    "headings": {"en": "Handwritten Document Ready!"},
+#                    "contents": {"en": name+" is ready!"},
+#                    "data": {"status": "Success", "payload": output}
+#                    }
+#         print(payload)
+#         req = requests.post("https://onesignal.com/api/v1/notifications", headers=header, data=json.dumps(payload))
+#         print(req.status_code, req.json())
+#     else:
+#         header = {
+#             "Content-Type": "application/json; charset=utf-8",
+#             "Authorization": settings.ONE_SIGNAL_AUTH_KEY
+#         }
+#         payload = {"app_id": settings.ONE_SIGNAL_ID,
+#                    "include_player_ids": [player_id],
+#                     "headings": {"en": "Handwritten Document Failed!"},
+#                     "contents": {"en": name+" failed to processed as it contained some invalid characters or images. Please check and retry!"},
                    
-                   "data": {"status": "Failed", "payload": output}
-                   }
-        print(payload)
-        req = requests.post("https://onesignal.com/api/v1/notifications", headers=header, data=json.dumps(payload))
-        print(req.status_code, req.json())
+#                    "data": {"status": "Failed", "payload": output}
+#                    }
+#         print(payload)
+#         req = requests.post("https://onesignal.com/api/v1/notifications", headers=header, data=json.dumps(payload))
+#         print(req.status_code, req.json())
 
 
 
