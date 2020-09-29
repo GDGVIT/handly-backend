@@ -88,7 +88,7 @@ def send_push(player_id, output, status, name):
         payload = {"app_id": settings.ONE_SIGNAL_ID,
                    "include_player_ids": [player_id],
                     "headings": {"en": "Handwritten Document Failed!"},
-                    "contents": {"en": name+" failed because of "+output},
+                    "contents": {"en": name+" failed to processed as it contained some invalid characters or images! Please check and retry!"},
                    
                    "data": {"status": "Failed", "payload": output}
                    }
