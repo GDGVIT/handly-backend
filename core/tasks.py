@@ -25,14 +25,13 @@ def upload_to_aws(local_file, bucket, s3_file):
         print("Credentials not available")
         return False
 
-def sendNotif(notif, message):
-
+def sendNotif(notif, message, title):
     message = messaging.Message(
         data={
             'message': message,
         },
         notification=messaging.Notification(
-            title='Deskcount',
+            title=title,
             body=message,
         ),
         android= {
@@ -72,14 +71,14 @@ def output_file_proccessor(id, file_url, player_id):
         handwriter.save()
         output = OutputFiles.objects.filter(input_details__id=id)
         if player_id != '':
-            send_push.delay(player_id, '/media/' + resp.split('/media/')[1], True, name)
+            sendNotif(player_id,name+" is ready!","Handwritten Document Ready!")
             print("done")
     else:
         handwriter.error_status = True
         handwriter.error_logger = resp
         handwriter.save()
         if player_id != '':
-            send_push.delay(player_id, "", False,name)
+            sendNotif(player_id,name+" failed to processed as it contained some invalid characters or images. Please check and retry!","Handwritten Document Failed!")
         # send push
     print(status)
 
