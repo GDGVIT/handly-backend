@@ -40,6 +40,7 @@ def output_file_proccessor(id, file_url, player_id):
     print(resp)
     handwriter = HandwritingInputLogger.objects.filter(id=id)[0]
     handwriter.status = True
+    name = handwriter.name
     if status:
         data = {
             'input_details': handwriter,
@@ -52,19 +53,19 @@ def output_file_proccessor(id, file_url, player_id):
         handwriter.save()
         output = OutputFiles.objects.filter(input_details__id=id)
         if player_id != '':
-            send_push(player_id, '/media/' + resp.split('/media/')[1], True)
+            send_push(player_id, '/media/' + resp.split('/media/')[1], True, name)
             print("done")
     else:
         handwriter.error_status = True
         handwriter.error_logger = resp
         handwriter.save()
         if player_id != '':
-            send_push(player_id, '/media/' + resp.split('/media/')[1], False)
+            send_push(player_id, "", False,name)
         # send push
     print(status, '/media/' + resp.split('/media/')[1])
 
 
-def send_push(player_id, output, status):
+def send_push(player_id, output, status, name):
     if status:
         header = {
             "Content-Type": "application/json; charset=utf-8",
@@ -72,7 +73,8 @@ def send_push(player_id, output, status):
         }
         payload = {"app_id": settings.ONE_SIGNAL_ID,
                    "include_player_ids": [player_id],
-                   "contents": {"en": "Handwritten Document Ready!"},
+                   "headings": {"en": "Handwritten Document Ready!"},
+                   "contents": {"en": name+" is ready!"},
                    "data": {"status": "Success", "payload": output}
                    }
         print(payload)
@@ -85,7 +87,9 @@ def send_push(player_id, output, status):
         }
         payload = {"app_id": settings.ONE_SIGNAL_ID,
                    "include_player_ids": [player_id],
-                   "contents": {"en": "Handwritten Document Failed!"},
+                    "headings": {"en": "Handwritten Document Failed!"},
+                    "contents": {"en": name+" failed because of "+output},
+                   
                    "data": {"status": "Failed", "payload": output}
                    }
         print(payload)
