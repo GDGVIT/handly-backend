@@ -53,18 +53,18 @@ def output_file_proccessor(id, file_url, player_id):
         handwriter.save()
         output = OutputFiles.objects.filter(input_details__id=id)
         if player_id != '':
-            send_push(player_id, '/media/' + resp.split('/media/')[1], True, name)
+            send_push.delay(player_id, '/media/' + resp.split('/media/')[1], True, name)
             print("done")
     else:
         handwriter.error_status = True
         handwriter.error_logger = resp
         handwriter.save()
         if player_id != '':
-            send_push(player_id, "", False,name)
+            send_push.delay(player_id, "", False,name)
         # send push
-    print(status, '/media/' + resp.split('/media/')[1])
+    print(status)
 
-
+@task(name="process_notif",serializer='json')
 def send_push(player_id, output, status, name):
     if status:
         header = {
@@ -88,7 +88,7 @@ def send_push(player_id, output, status, name):
         payload = {"app_id": settings.ONE_SIGNAL_ID,
                    "include_player_ids": [player_id],
                     "headings": {"en": "Handwritten Document Failed!"},
-                    "contents": {"en": name+" failed to processed as it contained some invalid characters or images! Please check and retry!"},
+                    "contents": {"en": name+" failed to processed as it contained some invalid characters or images. Please check and retry!"},
                    
                    "data": {"status": "Failed", "payload": output}
                    }
