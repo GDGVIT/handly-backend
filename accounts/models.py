@@ -64,7 +64,7 @@ class User(AbstractBaseUser):
 class OneSignalNotifications(models.Model):
     id = models.UUIDField(default=uuid.uuid4,primary_key=True)
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    player_id = models.CharField(max_length=120)
+    player_id = models.CharField(max_length=400)
 
 
 
