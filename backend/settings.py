@@ -13,6 +13,11 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from decouple import config
 import dj_database_url
+import firebase_admin
+from firebase_admin import credentials
+
+cred = credentials.Certificate("handly.json")
+firebase_admin.initialize_app(cred)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

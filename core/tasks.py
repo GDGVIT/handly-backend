@@ -8,6 +8,7 @@ from django.conf import settings
 from celery.task import task
 from Algo.document_parser import main
 from .models import OutputFiles, HandwritingInputLogger
+from firebase_admin import messaging
 
 s3 = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY, aws_secret_access_key=settings.AWS_SECRET)
 
@@ -23,6 +24,24 @@ def upload_to_aws(local_file, bucket, s3_file):
     except NoCredentialsError:
         print("Credentials not available")
         return False
+
+def sendNotif(notif, message):
+
+    message = messaging.Message(
+        data={
+            'message': message,
+        },
+        notification=messaging.Notification(
+            title='Deskcount',
+            body=message,
+        ),
+        android= {
+            "direct_boot_ok": True,
+        },
+        token=notif,
+    )
+    response = messaging.send(message)
+    print('Successfully sent notification:', response)
 
 
 # start after 1 sec
@@ -95,5 +114,7 @@ def send_push(player_id, output, status, name):
         print(payload)
         req = requests.post("https://onesignal.com/api/v1/notifications", headers=header, data=json.dumps(payload))
         print(req.status_code, req.json())
+
+
 
 
