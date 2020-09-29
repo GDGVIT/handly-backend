@@ -76,10 +76,7 @@ def output_file_proccessor(id, file_url, player_id):
         if player_id != '':
             sendNotif(player_id,name+" failed to processed as it contained some invalid characters or images. Please check and retry!","Handwritten Document Failed!")
         # send push
-    try:
-        os.remove(input_loc)
-    except:
-        pass
+    
     print(status)
 
 # @task(name="process_notif",serializer='json')
