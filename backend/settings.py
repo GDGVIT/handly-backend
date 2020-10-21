@@ -12,7 +12,12 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from decouple import config
-import django_heroku
+import dj_database_url
+import firebase_admin
+from firebase_admin import credentials
+
+cred = credentials.Certificate("handly.json")
+firebase_admin.initialize_app(cred)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,7 +25,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -34,8 +39,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'accounts',
     'core',
-    
-    'background_task',
+
 ]
 
 MIDDLEWARE = [
@@ -69,9 +73,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -79,14 +80,14 @@ DATABASES = {
     }
 }
 
+if os.environ.get('DATABASE_URL'):
+    DATABASES['default'] = dj_database_url.config()
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
-
-# Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -110,7 +111,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE =  'Asia/Kolkata'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -118,12 +119,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
 STATIC_URL = '/static/'
-
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
@@ -131,11 +127,18 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-
 ONE_SIGNAL_ID = config('ONE_SIGNAL_ID')
 ONE_SIGNAL_AUTH_KEY = config('ONE_SIGNAL_AUTH_KEY')
 
+PICKLE_LOC = os.path.join(BASE_DIR, 'hashes.pickle')
 
-PICKLE_LOC = os.path.join(BASE_DIR,'hashes.pickle')
 
-django_heroku.settings(locals())
+AWS_ACCESS_KEY = config('AWS_ACCESS_KEY')
+AWS_SECRET = config('AWS_SECRET')
+
+# Celery application definition
+CELERY_BROKER_URL = config('REDIS_URL')
+CELERY_RESULT_BACKEND = config('REDIS_URL')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
